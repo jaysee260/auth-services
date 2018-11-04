@@ -1,4 +1,5 @@
 const app = require("express")();
+const { name:projName = "Server" } = require("./package.json");
 const { PORT = 3000 } = process.env;
 const jwt = require("jsonwebtoken");
 
@@ -23,5 +24,5 @@ app.get("/api/auth/jwt-factory", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log("Server running and listening on port %s", PORT);
+    console.log("%s running and listening on port %s", projName, PORT);
 })
