@@ -39,11 +39,11 @@ exports.checkWhitelist = function (req, res, next) {
 }
 
 
-exports.generateJwt = function ({ secret, issuer, subject, jwtid, expiresIn }) {
+exports.generateJwt = function ({ secret, issuer, subject, jwtid, expiresIn }, payload = null) {
     // Module has self contained dependencies
     const jwt = require("jsonwebtoken");
 
-    let payload = Date.now();
+    payload = payload !== null ? payload : Date.now();
     
     return jwt.sign({ payload }, secret, { issuer, subject, jwtid, expiresIn });
 }
