@@ -38,12 +38,15 @@ exports.checkWhitelist = function (req, res, next) {
         });
 }
 
+exports.validatePayload = function (jwtPayload) {
 
-exports.generateJwt = function ({ secret, issuer, subject, jwtid, expiresIn }, payload = null) {
-    // Module has self contained dependencies
+}
+
+
+exports.generateJwt = function ({ secret, options }, payload = null) {
     const jwt = require("jsonwebtoken");
 
-    payload = payload !== null ? payload : Date.now();
-    
-    return jwt.sign({ payload }, secret, { issuer, subject, jwtid, expiresIn });
+    // payload = payload !== null ? payload : Date.now();
+    let tempPayload = { name: "juan", email: "myemail@email.com", admin: true };
+    return jwt.sign(tempPayload, secret, options);
 }
