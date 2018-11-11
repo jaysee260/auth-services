@@ -17,7 +17,7 @@ exports.checkWhitelist = function (req, res, next) {
             // do DB things.
             console.log("DB connection successfull.");
             console.log("This is where the whitelist would be checked.");
-
+            req.jwtPayload = null;
             console.log("closing DB connection....");
             dbConnection.close()
                 .then(() => {
