@@ -1,0 +1,25 @@
+{
+  "name": "myazure-idsrv",
+  "version": "1.0.0",
+  "description": "an experimental identitiy server",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+
+    "dev:jwt-factory": "nodemon ./services/jwt-factory/server/index.js",
+    "dev:user-registration": "nodemon ./services/user-registration/server/index.js"
+  },
+  "author": "Juan C. Gonzalez",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.3.0",
+    "mssql": "^4.2.3"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "nodemon": "^1.18.6"
+  }
+}
