@@ -2,21 +2,11 @@ const app = require("express")();
 const { name:projName = "Server" } = require("./package.json");
 const { PORT = 3000 } = process.env;
 const jwt = require("jsonwebtoken");
+const { dbConnection, checkWhitelist } = require("./checkWhitelist");
 
 app.get("/", (req, res) => {
     res.status(200).send(true);
 });
-
-
-function checkWhitelist(req, res, next) {
-    /** @todo
-     * query DB.
-     * if email is found in whitelist, proceed ( next() ).
-     * otherwise, terminate request with appropriate status code and message.
-     */
-    console.log("this is where the whitelist would be checked");
-    next();
-}
 
 app.get("/api/jwt-factory", checkWhitelist, (req, res) => {
     const {
