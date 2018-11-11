@@ -1,0 +1,7 @@
+{
+    "issuer": "api/auth/jwt-factory",
+    "subject": "test_subject123",
+    "jwtid": "subject's unique id or something",
+    "secret": "abracadabra",
+    "expiresIn": 30 
+}
