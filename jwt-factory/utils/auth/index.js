@@ -109,14 +109,17 @@ exports.checkWhitelistPost = function (req, res, next) {
 }
 
 exports.validatePayload = function (jwtPayload) {
-
+    // check payload structure
+    // check content? maybe redundant?
 }
 
 
 exports.generateJwt = function ({ secret, options }, payload) {
     const jwt = require("jsonwebtoken");
+    // by this point we should have already validated the payload.
+    /** @todo before calling jwt.sign... figure out logistics
+     * to store the jwt's guid 
+     */
 
-    // payload = payload !== null ? payload : Date.now();
-    // let tempPayload = { name: "juan", email: "myemail@email.com", admin: true };
     return jwt.sign(payload, secret, options);
 }

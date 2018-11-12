@@ -41,14 +41,15 @@ app.post("/api/jwt-factory", checkWhitelistPost, (req, res) => {
      * payload to the request object (jwtPayload).
      * If program control has reached this endpoint, we can then
      * assume there's a jwtPayload object attached to the request.
-     * We will pass that payload to generateJwt(settings, payload).
      */
-    /** @todo validate payload before generating token '
-     * @method validatePayload(jwtPayload)?
-     */
-    // let payload = validateJwtPayload(req.jwtPayload);
+  
     let { jwtPayload } = req;
-    console.log(jwtPayload);
+
+    /**
+     * @todo
+     * validate payload
+     * reject or generate token
+     */
     
     const token = generateJwt(jwtSettings, jwtPayload);
     const msg = "This is where you can get a JWT.";
