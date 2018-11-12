@@ -1,10 +1,13 @@
 const app = require("express")();
-// const bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 const { name:projName = "Server" } = require("./package.json");
 const { PORT = 3000 } = process.env;
 
 const { jwt:jwtSettings } = require("./config");
-const { checkWhitelist, generateJwt } = require("./utils/auth");
+const { checkWhitelist, checkWhitelistPost, generateJwt } = require("./utils/auth");
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Service health check endpoint
 app.get("/jwt-factory", (req, res) => {
@@ -31,11 +34,8 @@ app.get("/api/jwt-factory", checkWhitelist, (req, res) => {
     res.status(200).send({ msg, token });
 });
 
-app.listen(PORT, () => {
-    console.log("%s running and listening on port %s", projName, PORT);
-})
 
-app.post("/api/jwt-factory", checkWhitelist, (req, res) => {
+app.post("/api/jwt-factory", checkWhitelistPost, (req, res) => {
     /** 
      * if the whitelist check passses, we should attach a proper
      * payload to the request object (jwtPayload).
@@ -45,14 +45,17 @@ app.post("/api/jwt-factory", checkWhitelist, (req, res) => {
      */
     /** @todo validate payload before generating token '
      * @method validatePayload(jwtPayload)?
-    */
+     */
     // let payload = validateJwtPayload(req.jwtPayload);
-    let payload = req.jwtPayload ? req.jwtPayload : null;
-    const token = generateJwt(jwtSettings, payload);
+    let { jwtPayload } = req;
+    console.log(jwtPayload);
+    
+    const token = generateJwt(jwtSettings, jwtPayload);
     const msg = "This is where you can get a JWT.";
-
+    
     res.status(200).send({ msg, token });
 });
+
 
 app.listen(PORT, () => {
     console.log("%s running and listening on port %s", projName, PORT);
