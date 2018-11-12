@@ -3,7 +3,7 @@
 const token;
 
 
-function settings(verb = "GET", token) {
+function settings(verb = "GET", token = null, payload = null) {
     const httpVerbs = ["GET", "POST", "PUT", "PATCH", "DELETE"];
     
     verb = verb.toUpperCase();
@@ -25,6 +25,10 @@ function settings(verb = "GET", token) {
             token = token.replace(whitespace, noSpace);
         
         reqSettings.headers["Authentication"] = "Bearer " + token
+    }
+
+    if (data) {
+        reqSettings["body"] = JSON.stringify(data);
     }
 
     return reqSettings;
