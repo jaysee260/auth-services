@@ -15,6 +15,7 @@ app.get("/jwt-factory", (req, res) => {
 });
 
 // Service API endpoint
+/** @deprecated */
 app.get("/api/jwt-factory", checkWhitelist, (req, res) => {
     /** 
      * if the whitelist check passses, we should attach a proper
