@@ -1,0 +1,11 @@
+{
+    "db": {
+        "host": "myazure-idsrv.database.windows.net",
+        "name": "jwt-factory",
+        "username": "wizard",
+        "password": "#admin123",
+        "dialect": {
+            "mssql": "mssql"
+        }
+    }
+}
