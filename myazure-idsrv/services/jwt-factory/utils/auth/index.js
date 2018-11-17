@@ -2,183 +2,123 @@
  * @file Authentication utilities
  */
 
-exports.checkWhitelist = function (req, res, next) {
-    const { dbConnection } = require("../db");
-    /** @todo
-     * query DB.
-     * if email is found in whitelist, proceed ( next() ).
-     * otherwise, terminate request with appropriate status code and message.
+/** @desc
+ * Query DB.
+ * If email is found in whitelist, proceed ( next() ).
+ * Otherwise, terminate request with appropriate status code and message.
+ */
+exports.checkWhitelist = async function (req, res, next) {
+    if (!req.body.email) {
+        res.send("No email was provided in the request body.");
+        return;
+    }
+
+    const { pool } = require("../../utils/db");
+    let msg; // response message
+
+    try
+    {
+        await pool; // ensures that the pool has been created
+    }
+    catch (dbConnectionError)
+    {
+        console.log("A DB connection pool has not been created.");
+        console.log("Try re-starting the service.");
+        console.log(dbConnectionError);
+        msg = "Unable to establish DB connection.";
+        res.json({ msg });
+        return;
+    }
+
+    /** NOTE:
+     * Per the docs:
+     *  > "All values are automatically sanitized against sql injection."
+     * 
+     * Reference: https://www.npmjs.com/package/mssql#connection-pools
+     *            under ES6 Tagged template literals.
      */
-
-    console.log("initiating DB connection test...");
-    
-     dbConnection.authenticate()
-        .then(() => {
-            // do DB things.
-            console.log("DB connection successfull.");
-            console.log("This is where the whitelist would be checked.");
-            req.jwtPayload = null;
-            console.log("closing DB connection....");
-            dbConnection.close()
-                .then(() => {
-                    console.log("DB connection closed.");
-                    next();
-                })
-                .catch((error) => {
-                    console.log("Could not close DB connection...");
-                    console.log(error);
-                    res.status(505).send("Something went wrong.");
-                });
-            
-        })
-        .catch((error) => {
-            console.log("Attempt to establish connection with DB failed.");
-            console.log(error);
-            res.status(505).send("Something went wrong.");
-        });
-}
-
-// exports.checkWhitelistPost = function (req, res, next) {
-//     const { dbConnection } = require("../db");
-//     /** @todo
-//      * query DB.
-//      * if email is found in whitelist, proceed ( next() ).
-//      * otherwise, terminate request with appropriate status code and message.
-//      */
-//      const { email } = req.body;
-//      /** @todo validate email before putting it in query! */
-//      const query = `
-//         SELECT 
-//             wl.email,
-//             usr.first_name,
-//             usr.last_name
-//         FROM Whitelist as wl
-//             INNER JOIN Users as usr on wl.email = usr.email
-//         WHERE wl.email = '${email}'`;
-     
-//     console.log("initiating DB connection test...");
-//      dbConnection.authenticate()
-//         .then(() => {
-//             // do DB things.
-//             console.log("DB connection successfull.");
-//             console.log("This is where the whitelist would be checked.");
-//             // req.jwtPayload = null;
-
-//             /** @todo spread callback can expect JwtPayload[]; leverage interface */
-//             dbConnection.query(query).spread((results, metadata) => {
-//                 console.log("closing DB connection....");
-//                 dbConnection.close()
-//                     .then(() => {
-
-//                         console.log("DB connection closed.");
-//                         console.log({ results });
-//                         // check results; if valid attach to payload
-//                         // expects only one result, always
-//                         if (results.length === 1) {
-//                             function makeJwtPayload(dbResults) {
-//                                 return {
-//                                     name: dbResults.first_name.trim() + " " + dbResults.last_name.trim(),
-//                                     email: dbResults.email
-//                                 }
-//                             }
-//                             req.jwtPayload = makeJwtPayload(results[0]);
-//                             next();
-//                         } else {
-//                            let msg = "You are not authorized to receive a token.";
-//                            res.status(401).json({ msg }); 
-//                         }
-                        
-//                     })
-//                     .catch((error) => {
-//                         console.log("Could not close DB connection...");
-//                         console.log(error);
-//                         res.status(505).send("Something went wrong.");
-//                     });
-
-//             }).catch((error) => {
-//                 console.log(error);
-//                 res.status(505).send("Something went wrong.");
-//             });
-            
-//         })
-//         .catch((error) => {
-//             console.log("Attempt to establish connection with DB failed.");
-//             console.log(error);
-//             res.status(505).send("Something went wrong.");
-//         });
-// }
-
-exports.checkWhitelistPost = function (req, res, next) {
-    const { dbConnection } = require("../db");
-    /** @todo
-     * query DB.
-     * if email is found in whitelist, proceed ( next() ).
-     * otherwise, terminate request with appropriate status code and message.
-     */
+    console.log("building query...");
      const { email } = req.body;
-     /** @todo validate email before putting it in query! */
-     const query = `
+     const whitelistCheckQuery = `
         SELECT 
             wl.email,
+            usr.id,
             usr.first_name,
             usr.last_name
         FROM Whitelist as wl
             INNER JOIN Users as usr on wl.email = usr.email
         WHERE wl.email = '${email}'`;
-     
-    console.log("initiating DB connection test...");
-     dbConnection.authenticate()
-        .then(() => {
-            // do DB things.
-            console.log("DB connection successfull.");
-            console.log("This is where the whitelist would be checked.");
-            // req.jwtPayload = null;
 
-            /** @todo spread callback can expect JwtPayload[]; leverage interface */
-            dbConnection.query(query).spread((results, metadata) => {
-                console.log("closing DB connection....");
-                dbConnection.close()
-                    .then(() => {
+    let dbRequest;
+    try
+    {
+        console.log("creating DB request...");
+        dbRequest = await pool.request();
+    }
+    catch (dbRequestError)
+    {
+        console.log("error creating DB request.");
+        console.log("will not attempt to check Whitelist.");
+        console.log(dbRequestError);
 
-                        console.log("DB connection closed.");
-                        console.log({ results });
-                        // check results; if valid attach to payload
-                        // expects only one result, always
-                        if (results.length === 1) {
-                            function makeJwtPayload(dbResults) {
-                                return {
-                                    name: dbResults.first_name.trim() + " " + dbResults.last_name.trim(),
-                                    email: dbResults.email
-                                }
-                            }
-                            req.jwtPayload = makeJwtPayload(results[0]);
-                            next();
-                        } else {
-                           let msg = "You are not authorized to receive a token.";
-                           res.status(401).json({ msg }); 
-                        }
-                        
-                    })
-                    .catch((error) => {
-                        console.log("Could not close DB connection...");
-                        console.log(error);
-                        res.status(505).send("Something went wrong.");
-                    });
+        msg = "DB request failed."
+        res.status(500).json({ msg });
+        return;
+    }
 
-            }).catch((error) => {
-                console.log(error);
-                res.status(505).send("Something went wrong.");
-            });
-            
-        })
-        .catch((error) => {
-            console.log("Attempt to establish connection with DB failed.");
-            console.log(error);
-            res.status(505).send("Something went wrong.");
-        });
+    let dbResult;
+    try
+    {
+        console.log("querying to DB...");
+        console.log("checking Whitelist...");
+        dbResult = await dbRequest.query(whitelistCheckQuery);
+
+        if (dbResult.recordset.length > 0) {
+            function makeJwtPayload(user) {
+                return {
+                    user_id: user.id,
+                    name: user.first_name.trim() + " " + user.last_name.trim(),
+                    email: user.email
+                }
+            }
+
+            msg = "Email found in Whitelist. Permission to obtain token GRANTED.";
+            console.log(msg);
+            // console.log(dbResult);
+
+            // Attach jwtPayload to request and pass
+            // control over to endpoint handler.
+            req.jwtPayload = makeJwtPayload(dbResult.recordset[0]);
+            req.whitelistCheckMsg = msg;
+            next();
+
+        } else {
+            /** @todo idea: make your own ErrorType constructor */
+            throw { type: { userNotFound: true } };
+        }
+
+    }
+    catch (dbResultsError)
+    {
+        if (dbResultsError.type.userNotFound) {
+            msg = "Email not found in Whitelist. Permission to obtain token DENIED. "
+        } else {
+            msg = "An error occurred while checking the whitelist.";
+        }
+
+        console.log(msg);
+        console.log(dbResultsError);
+
+        res.status(500).json({ msg });
+    }
+    finally
+    {
+        dbRequest.cancel();
+        console.log("DB request ended.");
+    }
 }
 
-exports.validatePayload = function (jwtPayload) {
+exports.validatePayload = function (req, res, next) {
     // check payload structure
     // check content? maybe redundant?
 }
