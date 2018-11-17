@@ -52,7 +52,7 @@
     })();
 
     // Start service
-    app.listen(PORT, async () => {
+    app.listen(PORT, () => {
         console.log("%s running on port %s", serviceName, PORT);
     });
 })(process)
