@@ -11,23 +11,25 @@
     // Middleware Registration
     await (function registerMiddleWare(app) {
         const bodyParser = require("body-parser");
-
+        
         app.use(bodyParser.json());                                     
         app.use(bodyParser.urlencoded({ extended: true }));
     })(app);
 
-
     // Routes Registration
     await (function registerRoutes(app) {
-        const { userController } = require("./routes/controllers/userController");
-
-        /** @todo add health check endpoint */
-
-        app.route("/api/user-registration")
-            .post(userController.createUser);
-
+        const { checkWhitelist } = require("../utils/auth");
+        const { healthCheckController } = require("./routes/controllers/healthCheckController");
+        const { jwtFactoryController } = require("./routes/controllers/jwtFactoryController");
+        
+        // Service health check endpoint
+        app.route("/api/jwt-factory/health")
+        .get(healthCheckController);
+        
+        app.route("/api/jwt-factory")
+        .post(checkWhitelist, jwtFactoryController.issueToken)
+        
     })(app);
-
 
     // Database Initialization
     await (async function establishDatabaseConnection() {
@@ -43,16 +45,16 @@
         {
             console.log("Failed to connect to DB.");
             console.log(dbConnectionError);
-
+        
             console.log("Will not even attempt to start service.");
             console.log("Process ending now with exit code 1.");
             process.exit(1);
         }
-
     })();
 
-    // Start service
+
+    // Start Service
     app.listen(PORT, () => {
-        console.log("%s running on port %s", serviceName, PORT);
-    });
+        console.log("%s running and listening on port %s", serviceName, PORT);
+    })
 })(process)
