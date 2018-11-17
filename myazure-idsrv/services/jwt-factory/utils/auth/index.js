@@ -107,7 +107,7 @@ exports.checkWhitelist = async function (req, res, next) {
         }
 
         console.log(msg);
-        console.log(dbResultsError);
+        console.log({ dbResultsError });
 
         res.status(500).json({ msg });
     }
