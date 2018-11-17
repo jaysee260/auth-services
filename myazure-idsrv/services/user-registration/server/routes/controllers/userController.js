@@ -1,4 +1,3 @@
-const { dbConnection } = require("../../../../../utils/db");
 const { pool } = require("../../../../../utils/db");
 
 exports.userController = {
