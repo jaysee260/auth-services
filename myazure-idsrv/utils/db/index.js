@@ -5,6 +5,9 @@
 const { db } = require("../../db/config.json");
 const Sequelize = require("sequelize");
 
+const sql = require("mssql");
+const { db:dbConfig } = require("../../config");
+
 exports.dbConnection = new Sequelize(db.name, db.username, db.password, {
     host: db.host,
     dialect: db.dialect["mssql"],
@@ -19,3 +22,5 @@ exports.dbConnection = new Sequelize(db.name, db.username, db.password, {
         idle: 10000
     }
 });
+
+exports.pool = new sql.ConnectionPool(dbConfig);
