@@ -1,9 +1,4 @@
-'use strict'
-
-const token;
-
-
-function settings(verb = "GET", token = null, payload = null) {
+function settings(verb = "GET", token = null, data = null) {
     const httpVerbs = ["GET", "POST", "PUT", "PATCH", "DELETE"];
     
     verb = verb.toUpperCase();
@@ -34,6 +29,7 @@ function settings(verb = "GET", token = null, payload = null) {
     return reqSettings;
 }
 
-export function requestToken() {
-    return fetch("/api/auth/jwt-factory", settings());
-}
+const baseUrl = "/api/user-registration";
+
+exports.createUser = (payload) => 
+    fetch(baseUrl, settings("post", null, payload));

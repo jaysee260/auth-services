@@ -8,7 +8,6 @@
     "start:all": "concurrently --kill-others \"npm run start:jwt-factory\" \"npm run start:auth-check\" ",
     "start:jwt-factory": "cross-env PORT=3000 node ./identity-server/jwt-factory/server.js",
     "start:auth-check": "cross-env PORT=3001 node ./auth-check/server.js",
-
     "dev": "npm run dev:all",
     "dev:all": "concurrently --kill-others \"npm run dev:jwt-factory\" \"npm run dev:auth-check\" ",
     "dev:jwt-factory": "cross-env PORT=5000 nodemon ./identity-server/jwt-factory/server.js",
@@ -18,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.3.0"
   },
