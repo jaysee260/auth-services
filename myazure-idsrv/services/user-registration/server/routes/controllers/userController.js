@@ -17,7 +17,7 @@ exports.userController = {
         }
         catch (dbConnectionError)
         {
-            console.log("A DB pool has not been created.");
+            console.log("A DB connection pool has not been created.");
             console.log("Try re-starting the service.");
             console.log(dbConnectionError);
             res.json({ msg: "Unable to establish DB connection." });
@@ -65,13 +65,13 @@ exports.userController = {
 
             let msg = "User successfully created.";
             console.log(msg);
-            console.log(dbResult);
+            // console.log(dbResult);
             res.status(200).json({ msg })
         }
-        catch (dbQueryError) {
+        catch (dbResultsError) {
             let msg = "An error occurred while trying to create new user.";
             console.log(msg);
-            console.log(dbQueryError);
+            console.log(dbResultsError);
 
             res.status(500).json({ msg });
         }
