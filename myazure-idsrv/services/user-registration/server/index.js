@@ -21,6 +21,8 @@
     await (function registerRoutes(app) {
         const { userController } = require("./routes/controllers/userController");
 
+        /** @todo add health check endpoint */
+
         app.route("/api/user-registration")
             .post(userController.createUser);
 
