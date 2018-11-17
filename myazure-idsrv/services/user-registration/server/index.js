@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(PORT, async () => {
     console.log("%s running on port %s", name, PORT);
+    // Service spawns its own connection pool.
     try
     {
         await pool.connect();
