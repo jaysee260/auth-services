@@ -13,8 +13,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "sequelize": "^4.41.2",
-    "tedious": "^3.0.1"
+    "mssql": "^4.2.3"
   },
   "devDependencies": {
     "nodemon": "^1.18.6"
