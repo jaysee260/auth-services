@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
+
+    "dev:jwt-factory": "nodemon ./services/jwt-factory/server/index.js",
     "dev:user-registration": "nodemon ./services/user-registration/server/index.js"
   },
   "author": "Juan C. Gonzalez",
@@ -14,9 +16,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.3.0",
-    "mssql": "^4.2.3",
-    "sequelize": "^4.41.1",
-    "tedious": "^3.0.1"
+    "mssql": "^4.2.3"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
