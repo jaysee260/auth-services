@@ -1,10 +1,11 @@
 const app = require("express")();
 const bodyParser = require("body-parser");
-const { name:projName = "Server" } = require("./package.json");
+const { name : serviceName = "Server" } = require("../package.json");
 const { PORT = 3000 } = process.env;
+const { pool } = require("../utils/db");
 
-const { jwt:jwtSettings } = require("./config");
-const { checkWhitelist, checkWhitelistPost, generateJwt } = require("./utils/auth");
+const { jwt : jwtSettings } = require("../config");
+const { checkWhitelist, checkWhitelistPost, generateJwt } = require("../utils/auth");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -59,6 +60,21 @@ app.post("/api/jwt-factory", checkWhitelistPost, (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-    console.log("%s running and listening on port %s", projName, PORT);
+app.listen(PORT, async () => {
+    console.log("%s running and listening on port %s", serviceName, PORT);
+    // Service spawns its own connection pool.
+    try
+    {
+        await pool.connect();
+        console.log("Connected to DB.");
+    }
+    catch (dbConnectionError)
+    {
+        console.log("Failed to connect to DB.");
+        console.log(dbConnectionError);
+
+        console.log("Will not even attempt to start service.");
+        console.log("Process ending now with exit code 1.");
+        process.exit(1);
+    }
 })

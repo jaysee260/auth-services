@@ -3,7 +3,7 @@
  */
 
 const sql = require("mssql");
-const { db:dbConfig } = require("../../../../config");
+const { db : dbConfig } = require("../../../../config");
 
 
 exports.pool = new sql.ConnectionPool(dbConfig);
