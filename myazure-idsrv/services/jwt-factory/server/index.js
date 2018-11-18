@@ -27,6 +27,7 @@
         .get(healthCheckController);
         
         app.route("/api/jwt-factory")
+        // make it so that if a user that already has a token that hasn't expired cannot get
         .post(checkWhitelist, jwtFactoryController.issueToken)
         
     })(app);
