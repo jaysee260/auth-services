@@ -24,20 +24,6 @@ exports.userController = {
             return;
         }
 
-        /** NOTE:
-         * Per the docs:
-         *  > "All values are automatically sanitized against sql injection."
-         * 
-         * Reference: https://www.npmjs.com/package/mssql#connection-pools
-         *            under ES6 Tagged template literals.
-         */
-        console.log("building query...");
-        const { first_name, last_name, email, username, password } = req.body;
-        const userInsertQuery = `
-            INSERT INTO Users (first_name, last_name, email, username, password)
-            VALUES ('${first_name}', '${last_name}', '${email}', '${username}', '${password}')
-        `;
-
         let dbRequest;
         try
         {
@@ -55,6 +41,10 @@ exports.userController = {
             return;
         }
 
+
+        console.log("building query...");
+        const { buildUserInsertQuery } = require("../../../utils/db");
+        const userInsertQuery = await buildUserInsertQuery(req.body);
 
         let dbResult;
         try
