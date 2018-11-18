@@ -1,5 +1,5 @@
 const app = require("express")();
-const { name:projName = "Server" } = require("./package.json");
+const { name : service_name = "Server" } = require("./package.json");
 const { PORT = 3000 } = process.env;
 const jwt = require("jsonwebtoken");
 const authCheck = require("./authCheck");
@@ -15,11 +15,9 @@ app.get("/api/public", (req, res) => {
 
 app.get("/api/private", authCheck, (req, res) => {
     const msg = "You've reached a private route.";
-    console.log("This is the token: " + req.token);
-    
     res.status(200).send(msg)
 });
 
 app.listen(PORT, () => {
-    console.log("%s running and listening on port %s", projName ,PORT);
+    console.log("%s running and listening on port %s", service_name ,PORT);
 })
