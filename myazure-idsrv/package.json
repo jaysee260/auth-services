@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
-
     "dev:jwt-factory": "nodemon ./services/jwt-factory/server/index.js",
     "dev:user-registration": "nodemon ./services/user-registration/server/index.js"
   },
@@ -14,12 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "jsonwebtoken": "^8.3.0",
-    "mssql": "^4.2.3"
+    "express": "^4.16.4"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
+    "morgan": "^1.9.1",
     "nodemon": "^1.18.6"
   }
 }
