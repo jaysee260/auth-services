@@ -43,8 +43,11 @@ exports.userController = {
 
 
         console.log("building query...");
-        const { buildUserInsertQuery } = require("../../../utils/db");
-        const userInsertQuery = await buildUserInsertQuery(req.body);
+        let userInsertQuery;
+        { // delimits scope of 1-time-use function.
+            let { buildUserInsertQuery } = require("../../../utils/db");
+            userInsertQuery = await buildUserInsertQuery(req.body);
+        }
 
         let dbResult;
         try
@@ -59,7 +62,7 @@ exports.userController = {
             res.status(200).json({ msg })
         }
         catch (dbResultsError) {
-            let msg = "An error occurred while trying to create new user.";
+            let msg = "An error occurred while trying to create a new user.";
             console.log(msg);
             console.log(dbResultsError);
 

@@ -6,7 +6,7 @@ exports.jwtFactoryController = {
         /** 
          * if the whitelist check passses, we should attach a proper
          * payload to the request object (jwtPayload).
-         * If program control has reached this endpoint, we can then
+         * If program control has reached this endpoint, we can
          * assume there's a jwtPayload object attached to the request.
          */
         const { jwt : jwtSettings } = require("../../../config");
